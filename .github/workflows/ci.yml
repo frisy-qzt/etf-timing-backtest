@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install "ruff==0.11.13"
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
+      - run: python examples/zz1000_daily_demo.py
+
+  packaging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - name: Install wheel into isolated environment
+        run: |
+          python -m venv /tmp/etf-wheel-env
+          /tmp/etf-wheel-env/bin/python -m pip install dist/*.whl
+      - name: Run installed package outside source tree
+        run: |
+          cp examples/synthetic_demo.py /tmp/etf-synthetic-demo.py
+          cd /tmp
+          /tmp/etf-wheel-env/bin/python -c "import etf_backtest; print(etf_backtest.__file__)"
+          /tmp/etf-wheel-env/bin/python etf-synthetic-demo.py --output-root /tmp/etf-demo
+      - name: Run bundled daily sample with installed wheel
+        run: |
+          cp -r examples /tmp/etf-examples
+          cd /tmp
+          /tmp/etf-wheel-env/bin/python /tmp/etf-examples/zz1000_daily_demo.py --output-root /tmp/etf-daily-demo

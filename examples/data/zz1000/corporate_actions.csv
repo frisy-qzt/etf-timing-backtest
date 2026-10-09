@@ -1,0 +1,4 @@
+event_id,symbol,event_type,announcement_date,record_date,effective_date,pay_date,share_ratio,cash_per_share,rounding,suspension_date,resume_date,verified,source_url
+512100_consolidation_20220902,512100.SH,consolidation,2022-08-24,2022-09-01,2022-09-02,,0.36555,0,ceil_total_account_shares,2022-09-02,2022-09-05,true,https://www.sse.com.cn/disclosure/fund/announcement/c/new/2022-09-01/512100_20220901_1_3EvmduvU.pdf
+512100_dividend_20250115,512100.SH,cash_dividend,2025-01-10,2025-01-14,2025-01-15,2025-01-20,1,0.037,not_specified_in_notice,,,true,https://www.nffund.com/main/files/2025/01/09/022048968638.pdf
+512100_dividend_20260119,512100.SH,cash_dividend,2026-01-14,2026-01-16,2026-01-19,2026-01-22,1,0.041,not_specified_in_notice,,,true,https://www.sse.com.cn/disclosure/fund/announcement/c/new/2026-01-14/512100_20260114_6DR4.pdf

@@ -1,0 +1,18 @@
+name: 改进建议
+description: 说明研究场景与可验证的改进目标
+title: "[Feature] "
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: 使用场景
+      description: 当前流程在哪一步无法满足需要？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 预期行为与替代方案
+      description: 说明输入、输出、经济口径和验证方式。
+    validations:
+      required: true

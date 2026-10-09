@@ -1,0 +1,11 @@
+* text=auto eol=lf
+*.py text
+*.md text
+*.toml text
+*.yml text
+*.yaml text
+*.ipynb text
+*.parquet binary
+*.pdf binary
+*.png binary
+*.zip binary

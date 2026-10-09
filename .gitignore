@@ -1,0 +1,41 @@
+# Python / developer tooling
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.cache/
+.runtime_deps/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+
+# Credentials stay outside the repository
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local market data and research outputs (not licensed for redistribution)
+/1min/
+/5min/
+/15min/
+/30min/
+/60min/
+/daily/
+/ETF日线/
+/基金_复权因子/
+/data/research/
+/reports/
+/output/
+/test.ipynb
+/notebooks/*.ipynb
+!notebooks/synthetic-demo.ipynb

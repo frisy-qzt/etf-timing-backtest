@@ -1,0 +1,27 @@
+{
+  "symbol": "512100.SH",
+  "name": "南方中证1000ETF",
+  "frequency": "daily",
+  "rows": 2408,
+  "start": "2016-11-04",
+  "end": "2026-09-30",
+  "source": "Maintainer-provided local research snapshot; vendor and original redistribution terms not recorded.",
+  "price_basis": "OHLC unadjusted; signal_* uses causal effective corporate-action factors.",
+  "units": {
+    "price": "CNY/share",
+    "volume": "shares",
+    "amount": "CNY"
+  },
+  "timezone": "Asia/Shanghai local dates, timezone-naive",
+  "data_license": "Not covered by the code MIT license; no separate upstream data license is asserted.",
+  "files": {
+    "512100.SH_daily.parquet": {
+      "sha256": "c8fbdca30ccf9243cb41c5b995b243ff84ea71afe39477de36d535de0ff96074",
+      "bytes": 369659
+    },
+    "corporate_actions.csv": {
+      "sha256": "09fbc74e271c05ab2862d82a5df368259603cfbaeb5794ae6fa6e787ad743dc5",
+      "bytes": 836
+    }
+  }
+}

@@ -1,0 +1,26 @@
+name: 问题报告
+description: 提交可复现的代码、数据契约或文档问题
+title: "[Bug] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题与预期行为
+      description: 请区分实际结果与预期结果。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现
+      description: 使用合成数据；不要粘贴凭据或受限行情。
+      render: python
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      description: Python、包版本、操作系统和关键依赖版本。
+    validations:
+      required: true
