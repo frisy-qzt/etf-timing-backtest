@@ -31,19 +31,19 @@
 
 分红满足 `record_date < ex_date <= pay_date`。折算 `rounding="ceil"` 向上取整，其余值当前按向下取整处理；接入数据时应显式确认基金规则。`verified` 是调用者的声明，不是引擎自动验证公告来源。
 
-## 原工作区适配器
+## 文件读取适配器
 
-`data_root=` 分支固定读取 `512100.SH`，需要：
+推荐自行读取行情后通过 `bars=` 传入。`load_market_data(root, frequency)` 是一个固定格式的可选适配器，筛选 `512100.SH`，要求目录包含：
 
 ```text
 DATA_ROOT/
   daily/ETF_daily.parquet
-  1min/ETF_1min.parquet       # 仅分钟频率需要
+  1min/ETF_1min.parquet
   data/research/corporate_actions.csv
 ```
 
-源 Parquet 需要 `datetime`、`code`、OHLC、`volume`、`amount` 等字段。适配器将源成交量“手”乘 100；日线成交额“千元”乘 1000，分钟额已经为元。这是原数据集的约定，不能对任意供应商照搬。
+日频不需要分钟文件。源 Parquet 需要 `datetime`、`code`、OHLC、`volume`、`amount`；此适配器假定源量为手、日线额为千元、分钟额为元，并转换为标准单位。使用其他供应商数据时请自行转换，不要盲用此适配器。
 
-源事件 CSV 使用 `event_id`、`event_type`、`effective_date`、`share_ratio`、`rounding` 及上述分红字段；适配器将 `consolidation` 映射为 `split`，`cash_dividend` 映射为 `dividend`。与 `data_root` 一起传自定义 events 会被拒绝；需要自定义事件时使用 bars 接口。
+源事件表字段为 `event_id`、`event_type`、`effective_date`、`share_ratio`、`rounding` 及分红日期；`consolidation` 映射为 `split`，`cash_dividend` 映射为 `dividend`。自定义事件与 `bars=` 一起传入，不与 `data_root=` 混用。
 
-数据湖 `qfq/hfq` 缺日期因子设 1 是历史处理规则；研究接口的因果事件因子为另一套口径，两者不可混用。完整背景见 [历史工作区快照](local-research-history.md)。
+仓库附带的样本已经标准化，使用 [日频示例](../examples/README.md) 的 `load_sample()` 加载，不要再次转换单位。

@@ -29,10 +29,11 @@ class DailySampleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "checksum mismatch"):
                 load_sample(folder)
 
-    def test_daily_report_needs_no_private_workspace(self):
+    def test_daily_report_uses_bundled_data(self):
         with tempfile.TemporaryDirectory() as tmp:
             with patch(
-                "etf_backtest.api.load_market_data", side_effect=AssertionError("private data")
+                "etf_backtest.api.load_market_data",
+                side_effect=AssertionError("Unexpected external data loading"),
             ):
                 run = run_demo(tmp)
             self.assertTrue(run.report_path.is_file())

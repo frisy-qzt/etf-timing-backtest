@@ -30,7 +30,7 @@ class StrategyRun:
 
     @property
     def output_dir(self) -> Path:
-        """兼容旧调用：返回报告所在目录，报告路径请使用 report_path。"""
+        """返回报告所在目录；完整文件路径为 report_path。"""
         return self.report_path.parent
 
 

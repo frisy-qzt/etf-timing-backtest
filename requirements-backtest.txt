@@ -1,2 +1,0 @@
-# Compatibility entry point; dependency versions live in pyproject.toml.
--e .[notebook]

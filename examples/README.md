@@ -1,13 +1,12 @@
-# 示例
+# Examples
 
-在项目根目录安装 `python -m pip install -e .`。
+安装项目后运行：
 
-| 示例 | 输入 | 命令 |
+| 示例 | 数据 | 命令 |
 |---|---|---|
-| `zz1000_daily_demo.py` | 仓库附带的 512100.SH 日频与公司行动 | `python examples/zz1000_daily_demo.py` |
-| `synthetic_demo.py` | 固定随机种子的虚构行情 | `python examples/synthetic_demo.py` |
-| `new_strategy.py` | 自行准备的完整真实数据工作区 | `python examples/new_strategy.py --data-root /path/to/data --frequency 5min` |
+| 日频双均线 | 附带的 512100.SH 日频与公司行动 | `python examples/zz1000_daily_demo.py` |
+| 合成行情 | 固定随机种子的虚构价格 | `python examples/synthetic_demo.py` |
 
-日频 demo 支持 `--start`、`--end`、`--fast`、`--slow`、`--output-root`、`--data-dir`，无需下载行情。首次运行会验证两份样本文件的 SHA-256。调整参数或时段后，用不同输出目录保存比较结果。
+日频示例支持 `--start`、`--end`、`--fast`、`--slow`、`--output-root` 和 `--data-dir`，加载时验证样本 SHA-256。同名报告成功生成后会替换旧文件；对比实验请使用不同输出目录。
 
-真实样本的单位、来源和权利说明见 [样本说明](data/zz1000/README.md)。合成示例的工作日只是虚构日历近似。
+[样本说明](data/zz1000/README.md) · [自定义策略](../docs/strategy-package.md#自定义策略)

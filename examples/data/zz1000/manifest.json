@@ -5,7 +5,7 @@
   "rows": 2408,
   "start": "2016-11-04",
   "end": "2026-09-30",
-  "source": "Maintainer-provided local research snapshot; vendor and original redistribution terms not recorded.",
+  "source": "Project-maintained research dataset; upstream vendor and redistribution license unspecified.",
   "price_basis": "OHLC unadjusted; signal_* uses causal effective corporate-action factors.",
   "units": {
     "price": "CNY/share",

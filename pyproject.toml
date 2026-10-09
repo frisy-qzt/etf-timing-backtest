@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "etf-timing-backtest"
-version = "0.4.0"
+version = "0.5.0"
 description = "Event-aware long/cash ETF timing research with session-aware minute bars"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -19,7 +19,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 dependencies = [
-    "numpy>=1.24", "pandas>=2.2", "pyarrow>=18", "plotly>=6", "matplotlib>=3.9",
+    "numpy>=1.24", "pandas>=2.2", "pyarrow>=18", "plotly>=6",
     "tzdata>=2024.1; sys_platform == 'win32'",
 ]
 
@@ -30,7 +30,6 @@ Issues = "https://github.com/frisy-qzt/etf-timing-backtest/issues"
 
 [project.optional-dependencies]
 dev = ["ruff==0.11.13", "build>=1.2", "twine>=6"]
-notebook = ["nbformat>=5.10", "nbclient>=0.10", "nbconvert>=7.16", "ipykernel>=6.29", "jupyterlab>=4"]
 
 [tool.setuptools]
 packages = ["etf_backtest"]
@@ -39,17 +38,11 @@ include-package-data = false
 [tool.ruff]
 target-version = "py310"
 line-length = 100
-extend-exclude = [".cache", ".runtime_deps", "build", "dist"]
-include = ["etf_backtest/**/*.py", "scripts/**/*.py", "tests/**/*.py", "examples/**/*.py"]
+extend-exclude = [".cache", "build", "dist"]
+include = ["etf_backtest/**/*.py", "tests/**/*.py", "examples/**/*.py"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]
-
-[tool.ruff.lint.per-file-ignores]
-# Historical standalone research scripts configure local paths before importing.
-"scripts/*.py" = ["E402"]
-"tests/test_factor_lookup.py" = ["E402"]
-"tests/test_turnover_audit.py" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "double"

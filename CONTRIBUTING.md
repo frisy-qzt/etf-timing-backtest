@@ -1,6 +1,6 @@
-# 参与贡献
+# Contributing
 
-欢迎中文或英文 Issue / PR。请聚焦可复现问题与具体改进，尊重贡献者，不把研究结果包装为收益承诺。
+欢迎提交问题报告、文档改进和代码贡献。请用最小可复现案例说明问题，涉及交易行为时给出可手工核算的价格、时间与金额。
 
 ## 开发环境
 
@@ -9,26 +9,39 @@ python -m venv .venv
 source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
+```
+
+## 检查与测试
+
+```bash
 python -m ruff check .
 python -m ruff format --check .
 python -m unittest discover -s tests -v
-python examples/synthetic_demo.py
+python examples/zz1000_daily_demo.py
 ```
 
-Notebook 开发另装 `python -m pip install -e ".[dev,notebook]"`。依赖仅在 `pyproject.toml` 维护；`requirements-backtest.txt` 是兼容入口。详见 [代码规范](docs/code-style.md)。
+CI 在 Linux Python 3.10、3.12、3.14 上运行测试，并验证源码包、wheel 与安装后的示例。
 
-## 提交改动
+## 代码规范
 
-1. 基于明确问题开分支，避免把格式化、模型口径和新功能混在一个难以审查的改动中。
-2. 为行为变化补充测试；写明输入数据单位、执行时点和预期账本。
-3. 更新受影响的 API 文档及 `CHANGELOG.md`。
-4. 运行上述检查；涉及打包时额外执行 `python -m build` 和 `python -m twine check dist/*`。
-5. 在 PR 中说明问题、修复、验证结果及剩余限制。
+- 使用 UTF-8、LF、4 空格缩进；格式和导入顺序由 Ruff 管理，配置在 `pyproject.toml`。
+- 公开接口添加类型注解；DataFrame 接口说明字段、索引和单位。
+- 信号、成交与估值分离，不能用未来信息决定历史订单。
+- 非法输入应抛出明确异常，不静默填造数据；注释说明非显然的设计原因。
+- 行为修改增加回归测试；时间序列策略用前缀不变性检查因果性。
+- 限定改动范围，避免将无关格式化和模型变化混在同一个 PR 中。
 
-除版本内明确命名的 `examples/data/zz1000/` 样本外，不要提交行情数据、公告 PDF、报告输出、缓存、执行后的私人 Notebook、凭据或 `.env`。提交前检查暂存区；`.gitignore` 无法保护已跟踪文件。问题复现应使用最小合成样本，不粘贴受限数据。
+## 提交 PR
 
-## 审查标准
+说明问题、改动、验证命令及兼容性影响。更新相关文档和 CHANGELOG。不要提交凭据、生成报告、虚拟环境或未经说明的数据文件。贡献按 MIT 许可提供，请确认你有权提交相关内容。
 
-模型变更重点检查前视偏差、交易时间、T+1、公司行动、现金与份额守恒、成本和缺失处理。尽量增加能独立手算的反例，不用仅重述实现的测试。复杂改动应由独立审查者寻找反例后再合并。
+## 构建发行包
 
-贡献代码按本项目 MIT 许可提供；请确保你有权提交。报告安全问题请读 [SECURITY.md](SECURITY.md)。
+使用空的输出目录构建，检查包内容与元数据：
+
+```bash
+python -m build --outdir dist/release
+python -m twine check dist/release/*.whl dist/release/*.tar.gz
+```
+
+wheel 只含库代码；源码包包含文档、测试、示例和日频样本。发布前从源码包重建 wheel，并在干净环境验证。安全问题见 [SECURITY.md](SECURITY.md)。

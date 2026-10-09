@@ -1,4 +1,4 @@
-"""Run the bundled 512100.SH daily snapshot without downloads or private paths."""
+"""Run a daily ETF strategy using the bundled 512100.SH dataset."""
 
 import argparse
 import hashlib

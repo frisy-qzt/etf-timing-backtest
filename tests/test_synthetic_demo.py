@@ -1,4 +1,4 @@
-"""The public quick start must work without the private research workspace."""
+"""The synthetic example must generate valid data and a complete report."""
 
 import tempfile
 import unittest
@@ -20,10 +20,11 @@ class SyntheticDemoTests(unittest.TestCase):
         self.assertTrue((bars.high >= bars[["open", "close"]].max(axis=1)).all())
         self.assertTrue((bars.volume > 0).all())
 
-    def test_report_runs_without_private_data_and_retains_delayed_execution(self):
+    def test_report_uses_synthetic_data_and_retains_delayed_execution(self):
         with tempfile.TemporaryDirectory() as folder:
             with patch(
-                "etf_backtest.api.load_market_data", side_effect=AssertionError("private data")
+                "etf_backtest.api.load_market_data",
+                side_effect=AssertionError("Unexpected external data loading"),
             ):
                 run = run_demo(folder)
             self.assertEqual(list(Path(folder).resolve().iterdir()), [run.report_path])
