@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -5,6 +6,7 @@ from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
+import plotly.io as pio
 
 from etf_backtest import BacktestConfig, run_backtest, run_strategy
 from etf_backtest.engine import window_start
@@ -70,40 +72,54 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(window_start(bars.index[2], "60min").hour, 13)
 
     def test_html_only_flat_path_and_chinese_report(self):
-        m, d = fixtures()
-        bars = resample_minutes(m, d, "5min")
-        with tempfile.TemporaryDirectory() as tmp:
-            run = run_strategy("测试因子", "buy_hold", bars=bars, frequency="5min", output_root=tmp)
-            self.assertEqual(run.report_path, Path(tmp).resolve() / "测试因子report.html")
-            self.assertEqual(run.output_dir, Path(tmp).resolve())
-            self.assertEqual([x.name for x in Path(tmp).iterdir()], ["测试因子report.html"])
-            text = run.report_path.read_text()
-            for label in [
-                "累计收益率",
-                "夏普比率",
-                "因子策略",
-                "买入持有",
-                "始终空仓",
-                "实际仓位",
-                "买入取最高价、卖出取最低价",
-                "数据诊断与复现信息",
-                "0.50 个基点",
-            ]:
-                self.assertIn(label, text)
-            for english in [
-                "NAV / benchmark",
-                "Daily drawdown",
-                "Closed trade returns",
-                "No closed trades",
-                "diagnostics.json",
-            ]:
-                self.assertNotIn(english, text)
-            changed = run_strategy("测试因子", "cash", bars=bars, frequency="5min", output_root=tmp)
-            self.assertEqual(run.report_path, changed.report_path)
-            self.assertNotEqual(text, changed.report_path.read_text())
-            self.assertEqual(len(list(Path(tmp).iterdir())), 1)
-            with self.assertRaises(ValueError):
-                run_strategy("../escape", "cash", bars=bars, frequency="5min", output_root=tmp)
+        previous_engine = pio.json.config.default_engine
+        self.addCleanup(setattr, pio.json.config, "default_engine", previous_engine)
+        for engine in ("auto", "json"):
+            with self.subTest(engine=engine):
+                pio.json.config.default_engine = engine
+                m, d = fixtures()
+                bars = resample_minutes(m, d, "5min")
+                with tempfile.TemporaryDirectory() as tmp:
+                    run = run_strategy(
+                        "测试因子", "buy_hold", bars=bars, frequency="5min", output_root=tmp
+                    )
+                    self.assertEqual(run.report_path, Path(tmp).resolve() / "测试因子report.html")
+                    self.assertEqual(run.output_dir, Path(tmp).resolve())
+                    self.assertEqual([x.name for x in Path(tmp).iterdir()], ["测试因子report.html"])
+                    text = run.report_path.read_text()
+                    for label in [
+                        "累计收益率",
+                        "夏普比率",
+                        "因子策略",
+                        "买入持有",
+                        "始终空仓",
+                        "实际仓位",
+                        "买入取最高价、卖出取最低价",
+                        "数据诊断与复现信息",
+                        "0.50 个基点",
+                    ]:
+                        self.assertTrue(
+                            label in text or json.dumps(label, ensure_ascii=True)[1:-1] in text,
+                            f"Missing Chinese report label: {label}",
+                        )
+                    for english in [
+                        "NAV / benchmark",
+                        "Daily drawdown",
+                        "Closed trade returns",
+                        "No closed trades",
+                        "diagnostics.json",
+                    ]:
+                        self.assertNotIn(english, text)
+                    changed = run_strategy(
+                        "测试因子", "cash", bars=bars, frequency="5min", output_root=tmp
+                    )
+                    self.assertEqual(run.report_path, changed.report_path)
+                    self.assertNotEqual(text, changed.report_path.read_text())
+                    self.assertEqual(len(list(Path(tmp).iterdir())), 1)
+                    with self.assertRaises(ValueError):
+                        run_strategy(
+                            "../escape", "cash", bars=bars, frequency="5min", output_root=tmp
+                        )
 
     def test_failed_run_preserves_report_and_leaves_no_auxiliary_files(self):
         m, d = fixtures()
